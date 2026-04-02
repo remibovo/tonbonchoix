@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TonBonChoix</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #f6f8fb 0%, #eef3f8 100%);
+      color: #1f2937;
+    }
+    header {
+      background: linear-gradient(135deg, #111827, #1f2937);
+      color: white;
+      padding: 18px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    }
+    .brand { display:flex; align-items:center; gap:12px; }
+    .logo {
+      width:52px; height:52px; border-radius:14px;
+      background:linear-gradient(135deg,#2563eb,#1d4ed8);
+      display:flex; align-items:center; justify-content:center;
+      color:white; font-weight:700; font-size:1.1rem;
+      box-shadow:0 8px 18px rgba(37,99,235,0.28);
+    }
+    header h1 { margin: 0; font-size: 1.4rem; }
+    header p { margin: 0; font-size: 0.9rem; color: #d1d5db; }
+    .container { max-width: 1040px; margin: 0 auto; padding: 24px; }
+    .hero {
+      text-align: center;
+      padding: 56px 20px 32px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 24px;
+      margin-bottom: 18px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.84), rgba(255,255,255,0.94)),
+        url("https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1400&auto=format&fit=crop");
+      background-size: cover;
+      background-position: center;
+    }
+    .hero h2 { margin: 0 0 12px; font-size: 2.3rem; line-height: 1.15; color: #111827; }
+    .hero p { margin: 0 auto 24px; max-width: 700px; font-size: 1.08rem; color: #4b5563; }
+    .hero-badges { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
+    .mini-badge {
+      background: white; border: 1px solid #e5e7eb; border-radius: 999px; padding: 8px 14px;
+      font-size: 0.92rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .cta {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; padding: 14px 22px; border: none;
+      border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 1rem;
+      box-shadow: 0 10px 20px rgba(37,99,235,0.22);
+    }
+    .cta:hover { filter: brightness(1.05); }
+    .card {
+      background: rgba(255,255,255,0.96); border: 1px solid #e5e7eb; border-radius: 18px;
+      box-shadow: 0 16px 40px rgba(15,23,42,0.08); padding: 26px;
+    }
+    .form-card { margin-top: 12px; }
+    .form-card h3, .results-card h3 { margin-top: 0; font-size: 1.35rem; color: #111827; }
+    .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .full { grid-column: 1 / -1; }
+    .field label { display: block; margin-bottom: 8px; font-weight: bold; color: #374151; }
+    select, input {
+      width: 100%; padding: 13px 14px; border-radius: 12px; border: 1px solid #d1d5db;
+      background: #f9fafb; font-size: 0.98rem; color: #111827; outline: none; transition: 0.2s ease;
+    }
+    select:focus, input:focus {
+      border-color: #2563eb; background: white; box-shadow: 0 0 0 4px rgba(37,99,235,0.10);
+    }
+    .submit-row { margin-top: 8px; display: flex; justify-content: flex-start; }
+    .info-box, .warning-box {
+      border-radius: 14px; padding: 14px 16px; margin-bottom: 18px; font-size: 0.96rem; line-height: 1.45;
+    }
+    .info-box { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e3a8a; }
+    .warning-box { background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412; }
+    .results-card { margin-top: 22px; display: none; }
+    .results-subtitle { color: #6b7280; margin: 0 0 18px; }
+    .products { display: grid; gap: 16px; }
+    .product {
+      border: 1px solid #e5e7eb; border-radius: 16px; background: white; padding: 18px;
+      box-shadow: 0 8px 18px rgba(15,23,42,0.05);
+      display:grid; grid-template-columns: 130px 1fr; gap:16px;
+      align-items:center;
+    }
+    .product-image {
+      width: 130px; height: 130px; border-radius: 14px; object-fit: cover;
+      border: 1px solid #e5e7eb; background: #f8fafc;
+    }
+    .product-top { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+    .badge { display: inline-block; padding: 6px 10px; border-radius: 999px; font-size: 0.8rem; font-weight: bold; }
+    .badge-main { background: #e5e7eb; color: #374151; }
+    .badge-best { background: #fef3c7; color: #92400e; }
+    .badge-tech { background: #dbeafe; color: #1d4ed8; }
+    .badge-usage { background: #dcfce7; color: #166534; }
+    .product h4 { margin: 0 0 8px; font-size: 1.18rem; color: #111827; }
+    .price { font-size: 1.02rem; font-weight: bold; margin-bottom: 8px; color: #111827; }
+    .reason { color: #4b5563; margin: 0 0 14px; line-height: 1.5; }
+    .product a {
+      display: inline-block; text-decoration: none; color: white; background: linear-gradient(135deg, #111827, #374151);
+      padding: 11px 16px; border-radius: 10px; font-weight: bold;
+    }
+    .product a:hover { filter: brightness(1.05); }
+    footer { text-align: center; color: #6b7280; font-size: 0.9rem; padding: 28px 16px 36px; }
+    @media (max-width: 760px) {
+      .hero h2 { font-size: 1.8rem; }
+      .form-grid { grid-template-columns: 1fr; }
+      .card { padding: 20px; }
+      .product { grid-template-columns: 1fr; }
+      .product-image { width: 100%; height: 200px; }
+      header { padding:16px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo">TBC</div>
+      <div>
+        <h1>TonBonChoix</h1>
+        <p>3 produits. 1 bon choix. Zéro prise de tête.</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <section class="hero">
+      <h2>Marre de comparer pendant des heures ?</h2>
+      <p>Dis-nous ton budget, ta catégorie et ton usage. TonBonChoix te propose directement 3 produits cohérents, avec une recommandation claire et compréhensible.</p>
+      <div class="hero-badges">
+        <span class="mini-badge">⚡ Simple</span>
+        <span class="mini-badge">🎯 Adapté à ton besoin</span>
+        <span class="mini-badge">💸 Pensé pour ton budget</span>
+      </div>
+      <button class="cta" onclick="document.getElementById('form-card').scrollIntoView({behavior:'smooth'})">Trouver mon produit</button>
+    </section>
+
+    <section id="form-card" class="card form-card">
+      <h3>Ton besoin</h3>
+      <div class="form-grid">
+        <div class="field">
+          <label for="categorie">Catégorie</label>
+          <select id="categorie">
+            <option value="">-- Choisir --</option>
+            <option value="tv">📺 TV</option>
+            <option value="pc">💻 PC</option>
+            <option value="smartphone">📱 Téléphone</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="budget">Budget</label>
+          <select id="budget">
+            <option value="low">- de 300€</option>
+            <option value="mid">300–600€</option>
+            <option value="high">600–1000€</option>
+            <option value="premium">+1000€</option>
+          </select>
+        </div>
+
+        <div class="field" id="tailleWrap" style="display:none;">
+          <label for="taille">Taille écran</label>
+          <select id="taille"></select>
+        </div>
+
+        <div class="field" id="preferenceWrap" style="display:none;">
+          <label for="preference">Préférence</label>
+          <select id="preference">
+            <option value="aucune">Aucune</option>
+            <option value="apple">Apple</option>
+            <option value="android">Android</option>
+          </select>
+        </div>
+
+        <div class="field full">
+          <label for="usage">Utilisation</label>
+          <input id="usage" type="text" placeholder="Ex : Netflix, films, gaming, bureautique, photos..." />
+        </div>
+      </div>
+      <div class="submit-row">
+        <button class="cta" onclick="generateResults()">Voir mes 3 produits</button>
+      </div>
+    </section>
+
+    <section id="results" class="card results-card">
+      <h3>🔥 Nos recommandations</h3>
+      <p id="context" class="results-subtitle"></p>
+      <div id="warning"></div>
+      <div id="techAdvice"></div>
+      <div id="products" class="products"></div>
+    </section>
+  </div>
+
+  <footer>
+    Ce site contient des liens affiliés. Nous pouvons recevoir une commission sans coût supplémentaire pour vous.
+  </footer>
+
+  <script>
+    const categorieSelect = document.getElementById('categorie');
+    const tailleSelect = document.getElementById('taille');
+    const tailleWrap = document.getElementById('tailleWrap');
+    const preferenceWrap = document.getElementById('preferenceWrap');
+
+    const img = {
+      tvSmall: 'https://images.unsplash.com/photo-1593784991095-a205069470b6?q=80&w=600&auto=format&fit=crop',
+      tvMedium: 'https://images.unsplash.com/photo-1461151304267-38535e780c79?q=80&w=600&auto=format&fit=crop',
+      tvLarge: 'https://images.unsplash.com/photo-1571415060716-baff5f717c37?q=80&w=600&auto=format&fit=crop',
+      phoneApple: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?q=80&w=600&auto=format&fit=crop',
+      phoneAndroid: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=600&auto=format&fit=crop',
+      pc: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=600&auto=format&fit=crop'
+    };
+
+    categorieSelect.addEventListener('change', function () {
+      const cat = this.value;
+      if (cat === 'tv') {
+        tailleWrap.style.display = 'block';
+        preferenceWrap.style.display = 'none';
+        tailleSelect.innerHTML = `
+          <option value="small">- de 50"</option>
+          <option value="medium">55" à 65"</option>
+          <option value="large">+ de 65"</option>
+        `;
+      } else if (cat === 'smartphone') {
+        tailleWrap.style.display = 'block';
+        preferenceWrap.style.display = 'block';
+        tailleSelect.innerHTML = `
+          <option value="compact">Compact</option>
+          <option value="grand">Grand écran</option>
+        `;
+      } else {
+        tailleWrap.style.display = 'none';
+        preferenceWrap.style.display = 'none';
+        tailleSelect.innerHTML = '';
+      }
+    });
+
+    function buildUsageBadge(cat, usage, taille) {
+      if (taille === 'grand') return '📱 Grand écran';
+      if (taille === 'compact') return '👌 Compact';
+      if (!usage) return '✨ Usage général';
+      if (cat === 'tv' && (usage.includes('film') || usage.includes('netflix') || usage.includes('serie'))) return '🎬 Idéal films';
+      if (cat === 'tv' && (usage.includes('sport') || usage.includes('tnt'))) return '📺 Usage TV classique';
+      if (cat === 'pc' && (usage.includes('gaming') || usage.includes('jeu'))) return '🎮 Gaming';
+      if (cat === 'pc' && usage.includes('bureautique')) return '💼 Bureautique';
+      if (cat === 'smartphone' && usage.includes('photo')) return '📸 Bon en photo';
+      return '✨ Bon selon ton usage';
+    }
+
+    function renderProducts(produits, usageBadge) {
+      const container = document.getElementById('products');
+      container.innerHTML = '';
+
+      if (produits.length === 0) {
+        container.innerHTML = '<div class="warning-box">Aucun produit correspondant n’a été trouvé pour cette combinaison. Essaie une autre taille ou un autre budget.</div>';
+        return;
+      }
+
+      produits.forEach((p, i) => {
+        const mainBadge = i === 2
+          ? '<span class="badge badge-best">🔥 Meilleur choix</span>'
+          : '<span class="badge badge-main">👍 Bon choix</span>';
+
+        container.innerHTML += `
+          <article class="product">
+            <img class="product-image" src="${p.image}" alt="${p.title}">
+            <div>
+              <div class="product-top">
+                ${mainBadge}
+                <span class="badge badge-tech">${p.tech}</span>
+                <span class="badge badge-usage">${usageBadge}</span>
+              </div>
+              <h4>${p.title}</h4>
+              <div class="price">${p.price}</div>
+              <p class="reason">${p.reason}</p>
+              <a href="${p.link}" target="_blank">🔥 Voir le meilleur prix</a>
+            </div>
+          </article>
+        `;
+      });
+    }
+
+    function generateResults() {
+      const cat = categorieSelect.value;
+      const budget = document.getElementById('budget').value;
+      const taille = tailleSelect.value;
+      const preference = document.getElementById('preference').value;
+      const usageInput = document.getElementById('usage').value.trim();
+      const usage = usageInput.toLowerCase();
+
+      const results = document.getElementById('results');
+      const context = document.getElementById('context');
+      const warning = document.getElementById('warning');
+      const techAdvice = document.getElementById('techAdvice');
+
+      if (!cat) {
+        alert('Merci de choisir une catégorie.');
+        return;
+      }
+
+      let produits = [];
+      let warningText = '';
+      let techAdviceHtml = '';
+
+      if (cat === 'tv') {
+        if (usage.includes('film') || usage.includes('netflix') || usage.includes('cinema') || usage.includes('serie')) {
+          techAdviceHtml = `<div class="info-box">🎬 <strong>Conseil image :</strong> pour les films et les séries, l'OLED est souvent le meilleur choix. Si le budget est plus serré, la QLED ou la Mini-LED reste une excellente alternative.</div>`;
+        } else if (usage.includes('gaming') || usage.includes('jeu')) {
+          techAdviceHtml = `<div class="info-box">🎮 <strong>Conseil gaming :</strong> privilégie une TV fluide avec faible latence. Les modèles OLED et Mini-LED sont souvent les plus intéressants.</div>`;
+        } else {
+          techAdviceHtml = `<div class="info-box">💡 <strong>Astuce :</strong> LED = prix malin, QLED / Mini-LED = image plus lumineuse, OLED = qualité d'image premium.</div>`;
+        }
+
+        if (budget === 'low') {
+          warningText = '⚠️ Moins de 300€ est très serré pour une TV neuve. Voici des options proches ou des modèles d’entrée de gamme à surveiller.';
+        } else if (taille === 'large' && budget === 'mid') {
+          warningText = '⚠️ Budget un peu juste pour une TV de plus de 65 pouces : voici les meilleures options possibles sans trop sacrifier la qualité.';
+        }
+
+        if (taille === 'small') {
+          if (budget === 'low') {
+            produits = [
+              { title: 'TCL 32" LED', price: '~220€', tech: 'LED', image: img.tvSmall, reason: 'Le plus accessible pour un petit budget.', link: 'https://www.amazon.fr/s?k=TCL+32+LED' },
+              { title: 'Hisense 40" LED', price: '~260€', tech: 'LED', image: img.tvSmall, reason: 'Bon compromis taille / prix.', link: 'https://www.amazon.fr/s?k=Hisense+40+LED' },
+              { title: 'Samsung 43" entrée de gamme', price: '~299€', tech: 'LED', image: img.tvSmall, reason: 'Le meilleur choix si tu veux rester proche de 300€.', link: 'https://www.amazon.fr/s?k=Samsung+43+TV' }
+            ];
+          } else if (budget === 'mid') {
+            produits = [
+              { title: 'Samsung Crystal UHD 43"', price: '~400€', tech: 'LED', image: img.tvSmall, reason: 'Bon choix pour un usage classique avec un budget contenu.', link: 'https://www.amazon.fr/s?k=Samsung+Crystal+UHD+43' },
+              { title: 'LG UR7800 43"', price: '~450€', tech: 'LED', image: img.tvSmall, reason: 'Image équilibrée et interface simple au quotidien.', link: 'https://www.amazon.fr/s?k=LG+43+UR7800' },
+              { title: 'TCL QLED 43"', price: '~500€', tech: 'QLED', image: img.tvSmall, reason: 'Meilleur choix si tu veux une image plus flatteuse sans monter trop haut en prix.', link: 'https://www.amazon.fr/s?k=TCL+43+QLED' }
+            ];
+          } else {
+            produits = [
+              { title: 'Samsung QLED 43"', price: '~650€', tech: 'QLED', image: img.tvSmall, reason: 'Très bon compromis entre luminosité, marque et prix.', link: 'https://www.amazon.fr/s?k=Samsung+43+QLED' },
+              { title: 'LG OLED 48"', price: '~900€', tech: 'OLED', image: img.tvSmall, reason: 'Parfait pour les films, les séries et les belles scènes sombres.', link: 'https://www.amazon.fr/s?k=LG+48+OLED' },
+              { title: 'Sony OLED 48"', price: '~1000€', tech: 'OLED', image: img.tvSmall, reason: 'Le meilleur choix image premium dans un format compact.', link: 'https://www.amazon.fr/s?k=Sony+48+OLED' }
+            ];
+          }
+        }
+
+        if (taille === 'medium') {
+          if (budget === 'low') {
+            produits = [
+              { title: 'TCL 50" LED', price: '~299€', tech: 'LED', image: img.tvMedium, reason: 'Une des rares tailles 50 pouces proches de 300€.', link: 'https://www.amazon.fr/s?k=TCL+50+LED' },
+              { title: 'Hisense 50" LED', price: '~320€', tech: 'LED', image: img.tvMedium, reason: 'Peut valoir le coup si promo.', link: 'https://www.amazon.fr/s?k=Hisense+50+LED' },
+              { title: 'Samsung 50" Crystal UHD', price: '~349€', tech: 'LED', image: img.tvMedium, reason: 'Le meilleur choix si tu peux dépasser légèrement 300€.', link: 'https://www.amazon.fr/s?k=Samsung+50+Crystal+UHD' }
+            ];
+          } else if (budget === 'mid') {
+            produits = [
+              { title: 'Samsung Crystal UHD 55"', price: '~550€', tech: 'LED', image: img.tvMedium, reason: 'Bon achat simple et efficace pour un salon classique.', link: 'https://www.amazon.fr/s?k=Samsung+Crystal+UHD+55' },
+              { title: 'Hisense Mini-LED 55"', price: '~600€', tech: 'Mini-LED', image: img.tvMedium, reason: 'Très bon niveau d’image pour ce budget.', link: 'https://www.amazon.fr/s?k=Hisense+55+Mini+LED' },
+              { title: 'TCL 55C745 QLED', price: '~600€', tech: 'QLED', image: img.tvMedium, reason: 'Le meilleur rapport qualité/prix dans cette zone tarifaire.', link: 'https://www.amazon.fr/s?k=TCL+55C745' }
+            ];
+          } else if (budget === 'high') {
+            produits = [
+              { title: 'Samsung QLED 55"', price: '~800€', tech: 'QLED', image: img.tvMedium, reason: 'Très polyvalente pour toute la famille.', link: 'https://www.amazon.fr/s?k=Samsung+55+QLED' },
+              { title: 'LG QNED 55"', price: '~900€', tech: 'Mini-LED', image: img.tvMedium, reason: 'Très lumineuse si ton salon est éclairé.', link: 'https://www.amazon.fr/s?k=LG+55+QNED' },
+              { title: 'LG OLED55C3', price: '~1000€', tech: 'OLED', image: img.tvMedium, reason: 'Le meilleur choix pour films, séries et contraste.', link: 'https://www.amazon.fr/s?k=LG+OLED+C3+55' }
+            ];
+          } else {
+            produits = [
+              { title: 'Sony Full Array 55"', price: '~1200€', tech: 'LED premium', image: img.tvMedium, reason: 'Très belle image et excellent traitement vidéo.', link: 'https://www.amazon.fr/s?k=Sony+55+Full+Array' },
+              { title: 'Samsung Mini-LED 65"', price: '~1400€', tech: 'Mini-LED', image: img.tvMedium, reason: 'Très performante dans une grande pièce lumineuse.', link: 'https://www.amazon.fr/s?k=Samsung+65+Mini+LED' },
+              { title: 'Sony OLED 65"', price: '~1800€', tech: 'OLED', image: img.tvMedium, reason: 'Le meilleur choix haut de gamme pour une expérience cinéma.', link: 'https://www.amazon.fr/s?k=Sony+65+OLED' }
+            ];
+          }
+        }
+
+        if (taille === 'large') {
+          if (budget === 'low') {
+            produits = [
+              { title: 'TCL 55" LED', price: '~299€', tech: 'LED', image: img.tvLarge, reason: 'Tu seras souvent limité à cette zone de taille à ce budget.', link: 'https://www.amazon.fr/s?k=TCL+55+LED' },
+              { title: 'Hisense 58" UHD', price: '~320€', tech: 'LED', image: img.tvLarge, reason: 'Une bonne piste si promo.', link: 'https://www.amazon.fr/s?k=Hisense+58+UHD' },
+              { title: 'Samsung 58" UHD', price: '~379€', tech: 'LED', image: img.tvLarge, reason: 'Le meilleur choix si tu peux dépasser légèrement le budget.', link: 'https://www.amazon.fr/s?k=Samsung+58+UHD' }
+            ];
+          } else if (budget === 'mid') {
+            produits = [
+              { title: 'TCL LED 65"', price: '~600€', tech: 'LED', image: img.tvLarge, reason: 'Le plus accessible dans cette taille.', link: 'https://www.amazon.fr/s?k=TCL+65+LED' },
+              { title: 'Hisense QLED 65"', price: '~700€', tech: 'QLED', image: img.tvLarge, reason: 'Une image plus flatteuse que la LED classique.', link: 'https://www.amazon.fr/s?k=Hisense+65+QLED' },
+              { title: 'Samsung Crystal UHD 65"', price: '~750€', tech: 'LED', image: img.tvLarge, reason: 'Le meilleur compromis entre marque connue et budget raisonnable.', link: 'https://www.amazon.fr/s?k=Samsung+65+Crystal+UHD' }
+            ];
+          } else if (budget === 'high') {
+            produits = [
+              { title: 'Samsung QLED 65"', price: '~900€', tech: 'QLED', image: img.tvLarge, reason: 'Très bon choix polyvalent.', link: 'https://www.amazon.fr/s?k=Samsung+65+QLED' },
+              { title: 'LG QNED 65"', price: '~950€', tech: 'Mini-LED', image: img.tvLarge, reason: 'Très bon rendu dans une pièce lumineuse.', link: 'https://www.amazon.fr/s?k=LG+65+QNED' },
+              { title: 'Sony Full Array 65"', price: '~1000€', tech: 'LED premium', image: img.tvLarge, reason: 'Le meilleur choix si tu veux une belle image sans exploser le budget.', link: 'https://www.amazon.fr/s?k=Sony+65+Full+Array' }
+            ];
+          } else {
+            produits = [
+              { title: 'Samsung Neo QLED 75"', price: '~1600€', tech: 'Mini-LED', image: img.tvLarge, reason: 'Très immersif et très lumineux.', link: 'https://www.amazon.fr/s?k=Samsung+75+Neo+QLED' },
+              { title: 'LG OLED 77"', price: '~2200€', tech: 'OLED', image: img.tvLarge, reason: 'Une image cinéma impressionnante.', link: 'https://www.amazon.fr/s?k=LG+77+OLED' },
+              { title: 'Sony OLED 77"', price: '~2500€', tech: 'OLED', image: img.tvLarge, reason: 'Le meilleur choix premium absolu.', link: 'https://www.amazon.fr/s?k=Sony+77+OLED' }
+            ];
+          }
+        }
+      }
+
+      if (cat === 'smartphone') {
+        if (taille === 'compact') {
+          if (preference === 'apple') {
+            if (budget === 'low') {
+              warningText = '⚠️ Sous 300€, il n’y a pas vraiment d’iPhone neuf cohérent. Voici plutôt des modèles Apple proches ou des alternatives à surveiller.';
+              produits = [
+                { title: 'iPhone SE reconditionné', price: '~280€', tech: 'Apple', image: img.phoneApple, reason: 'La porte d’entrée la plus réaliste chez Apple à petit budget.', link: 'https://www.amazon.fr/s?k=iPhone+SE+reconditionne' },
+                { title: 'iPhone 11 reconditionné', price: '~300€', tech: 'Apple', image: img.phoneApple, reason: 'Une option encore correcte si tu acceptes le reconditionné.', link: 'https://www.amazon.fr/s?k=iPhone+11+reconditionne' },
+                { title: 'iPhone SE', price: '~529€', tech: 'Apple', image: img.phoneApple, reason: 'Le meilleur choix Apple compact si tu peux monter ton budget.', link: 'https://www.amazon.fr/s?k=iPhone+SE' }
+              ];
+            } else if (budget === 'mid') {
+              produits = [
+                { title: 'iPhone SE', price: '~529€', tech: 'Apple', image: img.phoneApple, reason: 'Le plus compact et accessible chez Apple.', link: 'https://www.amazon.fr/s?k=iPhone+SE' },
+                { title: 'iPhone 13', price: '~599€', tech: 'Apple', image: img.phoneApple, reason: 'Bon compromis prix / performances.', link: 'https://www.amazon.fr/s?k=iPhone+13' },
+                { title: 'iPhone 13 mini reconditionné', price: '~499€', tech: 'Apple', image: img.phoneApple, reason: 'Le meilleur choix si tu veux un petit format Apple dans ce budget.', link: 'https://www.amazon.fr/s?k=iPhone+13+mini+reconditionne' }
+              ];
+            } else if (budget === 'high') {
+              produits = [
+                { title: 'iPhone 14', price: '~699€', tech: 'Apple', image: img.phoneApple, reason: 'Toujours très équilibré.', link: 'https://www.amazon.fr/s?k=iPhone+14' },
+                { title: 'iPhone 15', price: '~950€', tech: 'Apple', image: img.phoneApple, reason: 'Très bon choix moderne et durable.', link: 'https://www.amazon.fr/s?k=iPhone+15' },
+                { title: 'iPhone 15 Pro reconditionné', price: '~999€', tech: 'Apple', image: img.phoneApple, reason: 'Le meilleur choix Apple premium si tu veux rester sous 1000€.', link: 'https://www.amazon.fr/s?k=iPhone+15+Pro+reconditionne' }
+              ];
+            } else {
+              produits = [
+                { title: 'iPhone 15', price: '~950€', tech: 'Apple', image: img.phoneApple, reason: 'Le plus cohérent si tu veux un iPhone récent.', link: 'https://www.amazon.fr/s?k=iPhone+15' },
+                { title: 'iPhone 15 Pro', price: '~1200€', tech: 'Apple', image: img.phoneApple, reason: 'Très haut de gamme et très complet.', link: 'https://www.amazon.fr/s?k=iPhone+15+Pro' },
+                { title: 'iPhone 16 Pro', price: '~1229€', tech: 'Apple', image: img.phoneApple, reason: 'Le meilleur choix Apple compact premium.', link: 'https://www.amazon.fr/s?k=iPhone+16+Pro' }
+              ];
+            }
+          } else if (preference === 'android') {
+            if (budget === 'low') {
+              produits = [
+                { title: 'Xiaomi Redmi 13C', price: '~150€', tech: 'Android', image: img.phoneAndroid, reason: 'Très bon choix compact à petit prix.', link: 'https://www.amazon.fr/s?k=Xiaomi+Redmi+13C' },
+                { title: 'Samsung Galaxy A15', price: '~190€', tech: 'Android', image: img.phoneAndroid, reason: 'Fiable et simple pour un usage quotidien.', link: 'https://www.amazon.fr/s?k=Samsung+Galaxy+A15' },
+                { title: 'Xiaomi Redmi Note 13 4G', price: '~230€', tech: 'Android', image: img.phoneAndroid, reason: 'Le meilleur choix Android sous 300€.', link: 'https://www.amazon.fr/s?k=Redmi+Note+13+4G' }
+              ];
+            } else if (budget === 'mid') {
+              produits = [
+                { title: 'Google Pixel 7a', price: '~500€', tech: 'Android', image: img.phoneAndroid, reason: 'Très bon rapport qualité/prix, surtout en photo.', link: 'https://www.amazon.fr/s?k=Pixel+7a' },
+                { title: 'Samsung Galaxy A55', price: '~450€', tech: 'Android', image: img.phoneAndroid, reason: 'Équilibré et fiable.', link: 'https://www.amazon.fr/s?k=Samsung+Galaxy+A55' },
+                { title: 'Google Pixel 8a', price: '~559€', tech: 'Android', image: img.phoneAndroid, reason: 'Le meilleur choix Android compact dans cette gamme.', link: 'https://www.amazon.fr/s?k=Google+Pixel+8a' }
+              ];
+            } else if (budget === 'high') {
+              produits = [
+                { title: 'Google Pixel 8', price: '~700€', tech: 'Android', image: img.phoneAndroid, reason: 'Excellent en photo et agréable en main.', link: 'https://www.amazon.fr/s?k=Google+Pixel+8' },
+                { title: 'Samsung Galaxy S23', price: '~800€', tech: 'Android', image: img.phoneAndroid, reason: 'Très bon équilibre global.', link: 'https://www.amazon.fr/s?k=Galaxy+S23' },
+                { title: 'Samsung Galaxy S24', price: '~999€', tech: 'Android', image: img.phoneAndroid, reason: 'Le meilleur choix Android compact premium sous 1000€.', link: 'https://www.amazon.fr/s?k=Samsung+Galaxy+S24' }
+              ];
+            } else {
+              produits = [
+                { title: 'Samsung Galaxy S24', price: '~1050€', tech: 'Android', image: img.phoneAndroid, reason: 'Très haut de gamme dans un format raisonnable.', link: 'https://www.amazon.fr/s?k=Samsung+Galaxy+S24' },
+                { title: 'Google Pixel 9 Pro', price: '~1100€', tech: 'Android', image: img.phoneAndroid, reason: 'Très fort en photo et très complet.', link: 'https://www.amazon.fr/s?k=Google+Pixel+9+Pro' },
+                { title: 'Samsung Galaxy S24 Ultra', price: '~1400€', tech: 'Android premium', image: img.phoneAndroid, reason: 'Le meilleur choix Android si ton budget suit.', link: 'https://www.amazon.fr/s?k=Samsung+Galaxy+S24+Ultra' }
+              ];
+            }
+          } else {
+            if (budget === 'low') {
+              produits = [
+                { title: 'Xiaomi Redmi 13C', price: '~150€', tech: 'Budget', image: img.phoneAndroid, reason: 'Très bon choix compact à petit prix.', link: 'https://www.amazon.fr/s?k=Xiaomi+Redmi+13C' },
+                { title: 'Samsung Galaxy A15', price: '~190€', tech: 'Budget', image: img.phoneAndroid, reason: 'Fiable et simple pour un usage quotidien.', link: 'https://www.amazon.fr/s?k=Samsung+Galaxy+A15' },
+                { title: 'Xiaomi Redmi Note 13 4G', price: '~230€', tech: 'Budget +', image: img.phoneAndroid, reason: 'Le meilleur choix si tu veux un téléphone compact plus complet sous 300€.', link: 'https://www.amazon.fr/s?k=Redmi+Note+13+4G' }
+              ];
+            } else if (budget === 'mid') {
+              produits = [
+                { title: 'Google Pixel 7a', price: '~500€', tech: 'Polyvalent', image: img.phoneAndroid, reason: 'Très bon rapport qualité/prix, surtout en photo.', link: 'https://www.amazon.fr/s?k=Pixel+7a' },
+                { title: 'Samsung Galaxy A55', price: '~450€', tech: 'Polyvalent', image: img.phoneAndroid, reason: 'Équilibré, fiable et agréable au quotidien.', link: 'https://www.amazon.fr/s?k=Samsung+Galaxy+A55' },
+                { title: 'iPhone SE', price: '~529€', tech: 'Apple', image: img.phoneApple, reason: 'Le meilleur choix si tu veux un vrai format compact et iOS.', link: 'https://www.amazon.fr/s?k=iPhone+SE' }
+              ];
+            } else if (budget === 'high') {
+              produits = [
+                { title: 'Google Pixel 8', price: '~700€', tech: 'Android', image: img.phoneAndroid, reason: 'Excellent en photo et très agréable en main.', link: 'https://www.amazon.fr/s?k=Google+Pixel+8' },
+                { title: 'Samsung Galaxy S23', price: '~800€', tech: 'Android', image: img.phoneAndroid, reason: 'Très bon équilibre entre performance, photo et confort.', link: 'https://www.amazon.fr/s?k=Galaxy+S23' },
+                { title: 'iPhone 15', price: '~950€', tech: 'Apple', image: img.phoneApple, reason: 'Le meilleur choix global dans cette gamme de prix.', link: 'https://www.amazon.fr/s?k=iPhone+15' }
+              ];
+            } else {
+              produits = [
+                { title: 'Samsung Galaxy S24', price: '~1050€', tech: 'Android', image: img.phoneAndroid, reason: 'Très haut de gamme dans un format encore raisonnable.', link: 'https://www.amazon.fr/s?k=Samsung+Galaxy+S24' },
+                { title: 'Google Pixel 9 Pro', price: '~1100€', tech: 'Android', image: img.phoneAndroid, reason: 'Très fort en photo et très complet.', link: 'https://www.amazon.fr/s?k=Google+Pixel+9+Pro' },
+                { title: 'iPhone 16 Pro', price: '~1229€', tech: 'Apple', image: img.phoneApple, reason: 'Le meilleur choix compact premium si ton budget suit.', link: 'https://www.amazon.fr/s?k=iPhone+16+Pro' }
+              ];
+            }
+          }
+        }
+
+        if (taille === 'grand') {
+          if (preference === 'apple') {
+            if (budget === 'low') {
+              warningText = '⚠️ Sous 300€, il n’y a pas vraiment d’iPhone grand écran neuf cohérent. Voici plutôt des pistes Apple proches ou reconditionnées.';
+              produits = [
+                { title: 'iPhone 11 reconditionné', price: '~300€', tech: 'Apple', image: img.phoneApple, reason: 'Une base réaliste si tu veux absolument Apple.', link: 'https://www.amazon.fr/s?k=iPhone+11+reconditionne' },
+                { title: 'iPhone 12 reconditionné', price: '~380€', tech: 'Apple', image: img.phoneApple, reason: 'Un peu au-dessus mais plus confortable.', link: 'https://www.amazon.fr/s?k=iPhone+12+reconditionne' },
+                { title: 'iPhone 13', price: '~599€', tech: 'Apple', image: img.phoneApple, reason: 'Le meilleur choix Apple si tu peux augmenter ton budget.', link: 'https://www.amazon.fr/s?k=iPhone+13' }
+              ];
+            } else if (budget === 'mid') {
+              produits = [
+                { title: 'iPhone 13', price: '~599€', tech: 'Apple', image: img.phoneApple, reason: 'Une bonne porte d’entrée si tu veux rester chez Apple.', link: 'https://www.amazon.fr/s?k=iPhone+13' },
+                { title: 'iPhone 12 Pro Max reconditionné', price: '~579€', tech: 'Apple', image: img.phoneApple, reason: 'Très bon confort d’écran dans la bonne tranche de prix.', link: 'https://www.amazon.fr/s?k=iPhone+12+Pro+Max+reconditionne' },
+                { title: 'iPhone 13 Pro Max reconditionné', price: '~599€', tech: 'Apple', image: img.phoneApple, reason: 'Le meilleur choix Apple grand écran cohérent entre 300 et 600€.', link: 'https://www.amazon.fr/s?k=iPhone+13+Pro+Max+reconditionne' }
+              ];
+            } else if (budget === 'high') {
+              produits = [
+                { title: 'iPhone 14 Plus', price: '~899€', tech: 'Apple', image: img.phoneApple, reason: 'Encore très cohérent dans cette gamme.', link: 'https://www.amazon.fr/s?k=iPhone+14+Plus' },
+                { title: 'iPhone 15 Plus', price: '~950€', tech: 'Apple', image: img.phoneApple, reason: 'Très bon choix grand écran récent.', link: 'https://www.amazon.fr/s?k=iPhone+15+Plus' },
+                { title: 'iPhone 15 Pro Max reconditionné', price: '~999€', tech: 'Apple', image: img.phoneApple, reason: 'Le meilleur choix Apple grand écran premium sous 1000€.', link: 'https://www.amazon.fr/s?k=iPhone+15+Pro+Max+reconditionne' }
+              ];
+            } else {
+              produits = [
+                { title: 'iPhone 15 Plus', price: '~950€', tech: 'Apple', image: img.phoneApple, reason: 'Très confortable pour vidéo et autonomie.', link: 'https://www.amazon.fr/s?k=iPhone+15+Plus' },
+                { title: 'iPhone 15 Pro Max', price: '~1300€', tech: 'Apple', image: img.phoneApple, reason: 'Très haut de gamme et très complet.', link: 'https://www.amazon.fr/s?k=iPhone+15+Pro+Max' },
+                { title: 'iPhone 16 Pro Max', price: '~1479€', tech: 'Apple', image: img.phoneApple, reason: 'Le meilleur choix Apple si ton budget suit.', link: 'https://www.amazon.fr/s?k=iPhone+16+Pro+Max' }
+              ];
+            }
+          } else if (preference === 'android') {
+            if (budget === 'low') {
+              produits = [
+                { title: 'Xiaomi Redmi Note 13', price: '~230€', tech: 'Android', image: img.phoneAndroid, reason: 'Très bon choix grand écran sous 300€.', link: 'https://www.amazon.fr/s?k=Redmi+Note+13' },
+                { title: 'Samsung Galaxy A15', price: '~190€', tech: 'Android', image: img.phoneAndroid, reason: 'Simple et efficace pour vidéo et réseaux sociaux.', link: 'https://www.amazon.fr/s?k=Samsung+Galaxy+A15' },
+                { title: 'POCO M6 Pro', price: '~220€', tech: 'Android', image: img.phoneAndroid, reason: 'Le meilleur choix Android grand écran à petit prix.', link: 'https://www.amazon.fr/s?k=POCO+M6+Pro' }
+              ];
+            } else if (budget === 'mid') {
+              produits = [
+                { title: 'Samsung Galaxy A55', price: '~450€', tech: 'Android', image: img.phoneAndroid, reason: 'Très bon équilibre entre écran, autonomie et fiabilité.', link: 'https://www.amazon.fr/s?k=Samsung+Galaxy+A55' },
+                { title: 'Nothing Phone (2a)', price: '~349€', tech: 'Android', image: img.phoneAndroid, reason: 'Très bon rapport style/équipement/prix.', link: 'https://www.amazon.fr/s?k=Nothing+Phone+2a' },
+                { title: 'Xiaomi 13T', price: '~500€', tech: 'Android premium', image: img.phoneAndroid, reason: 'Le meilleur choix Android grand écran entre 300 et 600€.', link: 'https://www.amazon.fr/s?k=Xiaomi+13T' }
+              ];
+            } else if (budget === 'high') {
+              produits = [
+                { title: 'Xiaomi 13 Pro', price: '~900€', tech: 'Android', image: img.phoneAndroid, reason: 'Très bien équipé pour son prix.', link: 'https://www.amazon.fr/s?k=Xiaomi+13+Pro' },
+                { title: 'Google Pixel 8 Pro', price: '~950€', tech: 'Android premium', image: img.phoneAndroid, reason: 'Excellent pour photo et grand écran.', link: 'https://www.amazon.fr/s?k=Google+Pixel+8+Pro' },
+                { title: 'Samsung Galaxy S23 Ultra', price: '~999€', tech: 'Android premium', image: img.phoneAndroid, reason: 'Le meilleur choix Android grand écran si tu veux tout faire sous 1000€.', link: 'https://www.amazon.fr/s?k=Samsung+Galaxy+S23+Ultra' }
+              ];
+            } else {
+              produits = [
+                { title: 'Samsung Galaxy S24 Ultra', price: '~1400€', tech: 'Ultra premium', image: img.phoneAndroid, reason: 'Très complet avec un immense écran.', link: 'https://www.amazon.fr/s?k=Samsung+Galaxy+S24+Ultra' },
+                { title: 'Google Pixel 9 Pro XL', price: '~1200€', tech: 'Premium photo', image: img.phoneAndroid, reason: 'Très fort pour photo et grand écran.', link: 'https://www.amazon.fr/s?k=Google+Pixel+9+Pro+XL' },
+                { title: 'Samsung Galaxy Z Fold', price: '~1800€', tech: 'Android ultra premium', image: img.phoneAndroid, reason: 'Le meilleur choix Android si tu veux du très haut de gamme différent.', link: 'https://www.amazon.fr/s?k=Samsung+Galaxy+Z+Fold' }
+              ];
+            }
+          } else {
+            if (budget === 'low') {
+              produits = [
+                { title: 'Xiaomi Redmi Note 13', price: '~230€', tech: 'Grand écran', image: img.phoneAndroid, reason: 'Très bon choix grand écran sous 300€.', link: 'https://www.amazon.fr/s?k=Redmi+Note+13' },
+                { title: 'Samsung Galaxy A15', price: '~190€', tech: 'Grand écran budget', image: img.phoneAndroid, reason: 'Simple et efficace pour vidéo et réseaux sociaux.', link: 'https://www.amazon.fr/s?k=Samsung+Galaxy+A15' },
+                { title: 'POCO M6 Pro', price: '~220€', tech: 'Grand écran', image: img.phoneAndroid, reason: 'Le meilleur choix si tu veux un grand écran avec un bon équipement à petit prix.', link: 'https://www.amazon.fr/s?k=POCO+M6+Pro' }
+              ];
+            } else if (budget === 'mid') {
+              produits = [
+                { title: 'Samsung Galaxy A55', price: '~450€', tech: 'Android', image: img.phoneAndroid, reason: 'Très bon équilibre entre écran, autonomie et fiabilité.', link: 'https://www.amazon.fr/s?k=Samsung+Galaxy+A55' },
+                { title: 'Nothing Phone (2a)', price: '~349€', tech: 'Android', image: img.phoneAndroid, reason: 'Très bon rapport style/équipement/prix.', link: 'https://www.amazon.fr/s?k=Nothing+Phone+2a' },
+                { title: 'iPhone 13 Pro Max reconditionné', price: '~599€', tech: 'Apple', image: img.phoneApple, reason: 'Le meilleur choix mixte grand écran cohérent dans cette tranche.', link: 'https://www.amazon.fr/s?k=iPhone+13+Pro+Max+reconditionne' }
+              ];
+            } else if (budget === 'high') {
+              produits = [
+                { title: 'Google Pixel 8 Pro', price: '~950€', tech: 'Android', image: img.phoneAndroid, reason: 'Excellent pour photo et grand écran.', link: 'https://www.amazon.fr/s?k=Google+Pixel+8+Pro' },
+                { title: 'iPhone 15 Plus', price: '~950€', tech: 'Apple', image: img.phoneApple, reason: 'Très bon choix grand écran si tu veux simplicité et autonomie.', link: 'https://www.amazon.fr/s?k=iPhone+15+Plus' },
+                { title: 'Samsung Galaxy S23 Ultra', price: '~999€', tech: 'Android', image: img.phoneAndroid, reason: 'Le meilleur choix global grand écran sous 1000€.', link: 'https://www.amazon.fr/s?k=Samsung+Galaxy+S23+Ultra' }
+              ];
+            } else {
+              produits = [
+                { title: 'Google Pixel 9 Pro XL', price: '~1200€', tech: 'Android', image: img.phoneAndroid, reason: 'Très fort pour photo et grand écran.', link: 'https://www.amazon.fr/s?k=Google+Pixel+9+Pro+XL' },
+                { title: 'iPhone 16 Pro Max', price: '~1479€', tech: 'Apple', image: img.phoneApple, reason: 'Très haut de gamme pour vidéo, photo et autonomie.', link: 'https://www.amazon.fr/s?k=iPhone+16+Pro+Max' },
+                { title: 'Samsung Galaxy S24 Ultra', price: '~1400€', tech: 'Android', image: img.phoneAndroid, reason: 'Le meilleur choix si tu veux un très grand écran premium.', link: 'https://www.amazon.fr/s?k=Samsung+Galaxy+S24+Ultra' }
+              ];
+            }
+          }
+        }
+      }
+
+      if (cat === 'pc') {
+        if (budget === 'low') {
+          produits = [
+            { title: 'ASUS E410', price: '~279€', tech: 'Budget', image: img.pc, reason: 'Le plus simple pour usage léger.', link: 'https://www.amazon.fr/s?k=ASUS+E410' },
+            { title: 'Lenovo IdeaPad 1', price: '~299€', tech: 'Budget', image: img.pc, reason: 'Bonne base pour bureautique légère.', link: 'https://www.amazon.fr/s?k=Lenovo+IdeaPad+1' },
+            { title: 'Acer Aspire 3', price: '~320€', tech: 'Budget +', image: img.pc, reason: 'Le meilleur choix si tu peux dépasser légèrement 300€.', link: 'https://www.amazon.fr/s?k=Acer+Aspire+3' }
+          ];
+        } else if (budget === 'mid') {
+          produits = [
+            { title: 'ASUS Vivobook 15', price: '~600€', tech: 'Budget', image: img.pc, reason: 'Parfait pour bureautique et usage simple.', link: 'https://www.amazon.fr/s?k=ASUS+Vivobook+15' },
+            { title: 'HP Pavilion 15', price: '~750€', tech: 'Polyvalent', image: img.pc, reason: 'Très bon compromis au quotidien.', link: 'https://www.amazon.fr/s?k=HP+Pavilion+15' },
+            { title: 'Lenovo IdeaPad 15', price: '~800€', tech: 'Polyvalent', image: img.pc, reason: 'Le meilleur choix si tu veux rester simple et efficace.', link: 'https://www.amazon.fr/s?k=Lenovo+IdeaPad+15' }
+          ];
+        } else if (budget === 'high') {
+          produits = [
+            { title: 'ASUS Vivobook 15', price: '~800€', tech: 'Polyvalent', image: img.pc, reason: 'Bon équilibre performances/prix.', link: 'https://www.amazon.fr/s?k=ASUS+Vivobook+15' },
+            { title: 'HP Pavilion 15', price: '~850€', tech: 'Polyvalent', image: img.pc, reason: 'Sérieuse alternative pour un usage quotidien complet.', link: 'https://www.amazon.fr/s?k=HP+Pavilion+15' },
+            { title: 'MacBook Air M2', price: '~999€', tech: 'Premium', image: img.pc, reason: 'Le meilleur choix pour autonomie et confort si tu trouves une bonne offre.', link: 'https://www.amazon.fr/s?k=MacBook+Air+M2' }
+          ];
+        } else {
+          produits = [
+            { title: 'Dell XPS 13', price: '~1300€', tech: 'Premium', image: img.pc, reason: 'Très belle finition et excellent confort.', link: 'https://www.amazon.fr/s?k=Dell+XPS+13' },
+            { title: 'MacBook Air M2', price: '~1100€', tech: 'Premium', image: img.pc, reason: 'Ultra fluide et très endurant.', link: 'https://www.amazon.fr/s?k=MacBook+Air+M2' },
+            { title: 'MacBook Air M3', price: '~1300€', tech: 'Premium', image: img.pc, reason: 'Le meilleur choix global si tu peux monter en budget.', link: 'https://www.amazon.fr/s?k=MacBook+Air+M3' }
+          ];
+        }
+      }
+
+      const usageBadge = buildUsageBadge(cat, usage, taille);
+      document.getElementById('context').textContent = usageInput ? `Sélection pensée pour un usage “${usageInput}”.` : 'Sélection pensée pour un usage général.';
+      document.getElementById('warning').innerHTML = warningText ? `<div class="warning-box">${warningText}</div>` : '';
+      document.getElementById('techAdvice').innerHTML = techAdviceHtml;
+
+      renderProducts(produits, usageBadge);
+      results.style.display = 'block';
+      results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  </script>
+</body>
+</html>
